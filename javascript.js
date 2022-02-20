@@ -1,9 +1,7 @@
 function computerPlay() {
-  function randomNumber() {
-    return Math.floor(Math.random() * 3) + 1;
-  }
+  let randomNumber = Math.floor(Math.random() * 3) + 1;
 
-  switch(randomNumber()) {
+  switch(randomNumber) {
     case 1:
       return 'Rock';
 
