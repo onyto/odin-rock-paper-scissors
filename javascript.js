@@ -21,24 +21,56 @@ function playerPlay() {
 
 function playRound(playerSelection, computerSelection) {
 
-  let winMessage = `You Win! ${playerSelection} beats ${computerSelection}`;
-  let loseMessage = `You Lose! ${computerSelection} beats ${playerSelection}`;
+  let playerWin = 'playerWin';
+  let computerWin = 'computerWin';
 
   if (playerSelection === 'Rock' && computerSelection === 'Paper') {
-    return loseMessage;
+    return computerWin;
   } else if (playerSelection === 'Rock' && computerSelection === 'Scissors') {
-    return winMessage;
+    return playerWin;
   } else if (playerSelection === 'Paper' && computerSelection === 'Rock') {
-    return winMessage;
+    return playerWin;
   } else if (playerSelection === 'Paper' && computerSelection === 'Scissors') {
-    return loseMessage;
+    return computerWin;
   } else if (playerSelection === 'Scissors' && computerSelection === 'Rock') {
-    return loseMessage;
+    return computerWin;
   } else if (playerSelection === 'Scissors' && computerSelection === 'Paper') {
-    return winMessage;
+    return playerWin;
   } else {
-    return 'It\'s a Draw!';
+    return 'draw';
   }
 }
 
-alert(playRound(playerPlay(), computerPlay()));
+function game() {
+  let playerScore = 0;
+  let computerScore = 0;
+
+  for (let i = 0; i < 5; i++) {
+
+    switch (playRound(playerPlay(), computerPlay())) {
+      case ('playerWin'):
+        playerScore++;
+        console.log(`Player wins this round! Current score is ${playerScore}:${computerScore}`);
+        break;
+
+      case ('computerWin'):
+        computerScore++;
+        console.log(`Computer wins this round! Current score is ${playerScore}:${computerScore}`);
+        break;
+
+      case ('draw'):
+        console.log(`Draw! Current score is ${playerScore}:${computerScore}`);
+        break;
+    }
+  }
+
+  if (playerScore > computerScore) {
+    console.log('The Player Wins!');
+  } else if (playerScore < computerScore) {
+    console.log('The Computer Wins!');
+  } else {
+    console.log('It\'s a Draw!');
+  }
+}
+
+game();
