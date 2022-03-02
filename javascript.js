@@ -5,25 +5,18 @@ let ingame = false;
 const currentScore = document.querySelector('#current-score');
 const finalScore = document.querySelector('#final-score');
 const results = document.querySelector('#results');
+const buttons = document.querySelectorAll('.btn');
 const startButton = document.querySelector('#start');
 
 startButton.addEventListener('click', () => {
   if (!ingame) {
-    showUi();
+    startGame();
     ingame = true;
   } else {
     resetGame();
     ingame = false;
   }
 })
-
-const buttons = document.querySelectorAll('.btn');
-buttons.forEach(button => {
-  button.addEventListener('click', () => {
-    game(playRound(button.textContent, computerPlay()));
-  })
-})
-
 
 function computerPlay() {
   let randomNumber = Math.floor(Math.random() * 3) + 1;
@@ -66,8 +59,10 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
-function game(result) {
-  switch (result) {
+function game() {
+  const selection = this.textContent;
+ 
+  switch (playRound(selection, computerPlay())) {
     case 'playerWin':
       playerScore++;
       currentScore.textContent = (`Score: ${playerScore}:${computerScore}`);
@@ -79,10 +74,17 @@ function game(result) {
     case 'draw':
       currentScore.textContent = (`Score: ${playerScore}:${computerScore}`);
       break;
-  };
+  }
 
-  if (playerScore === 5) finalScore.textContent = 'You win!';
-  if (computerScore === 5) finalScore.textContent = 'You lose!';
+  if (playerScore === 5) {
+    finalScore.textContent = 'You win!';
+    buttons.forEach(button => button.removeEventListener('click', game))
+  }
+
+  if (computerScore === 5) {
+    finalScore.textContent = 'You lose!';
+    buttons.forEach(button => button.removeEventListener('click', game))
+  }
 }
 
 function showUi() {
@@ -95,11 +97,18 @@ function hideUi() {
   content.setAttribute('hidden', 'hidden');
 }
 
+function startGame() {
+  buttons.forEach(button => button.addEventListener('click', game))
+  showUi();
+}
+
 function resetGame() {
   playerScore = 0;
   computerScore = 0;
   results.textContent = "Results:";
   currentScore.textContent = "Score:";
   finalScore.textContent = "";
+
+  buttons.forEach(button => button.removeEventListener('click', game))
   hideUi();
 }
