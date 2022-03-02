@@ -1,7 +1,34 @@
+let playerScore = 0;
+let computerScore = 0;
+let ingame = false;
+
+const currentScore = document.querySelector('#current-score');
+const finalScore = document.querySelector('#final-score');
+const results = document.querySelector('#results');
+const startButton = document.querySelector('#start');
+
+startButton.addEventListener('click', () => {
+  if (!ingame) {
+    showUi();
+    ingame = true;
+  } else {
+    resetGame();
+    ingame = false;
+  }
+})
+
+const buttons = document.querySelectorAll('.btn');
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+    game(playRound(button.textContent, computerPlay()));
+  })
+})
+
+
 function computerPlay() {
   let randomNumber = Math.floor(Math.random() * 3) + 1;
 
-  switch(randomNumber) {
+  switch (randomNumber) {
     case 1:
       return 'Rock';
 
@@ -13,64 +40,66 @@ function computerPlay() {
   }
 }
 
-function playerPlay() {
-  let playerSelection = prompt('Rock, Paper or Scissors?')
-  playerSelection = playerSelection.toLowerCase();
-  return playerSelection[0].toUpperCase() + playerSelection.slice(1);
-}
-
 function playRound(playerSelection, computerSelection) {
-
   let playerWin = 'playerWin';
   let computerWin = 'computerWin';
 
-  if (playerSelection === 'Rock' && computerSelection === 'Paper') {
-    return computerWin;
-  } else if (playerSelection === 'Rock' && computerSelection === 'Scissors') {
+  if (
+    playerSelection === 'Scissors' && computerSelection === 'Paper' ||
+    playerSelection === 'Paper' && computerSelection === 'Rock' ||
+    playerSelection === 'Rock' && computerSelection === 'Scissors'
+  ) {
+    results.textContent = `Results: You win this round, ${playerSelection} beats ${computerSelection}.`;
     return playerWin;
-  } else if (playerSelection === 'Paper' && computerSelection === 'Rock') {
-    return playerWin;
-  } else if (playerSelection === 'Paper' && computerSelection === 'Scissors') {
+
+  } else if (
+    playerSelection === 'Paper' && computerSelection === 'Scissors' ||
+    playerSelection === 'Scissors' && computerSelection === 'Rock' ||
+    playerSelection === 'Rock' && computerSelection === 'Paper'
+  ) {
+    results.textContent = `Results: You lose this round, ${playerSelection} loses to ${computerSelection}.`;
     return computerWin;
-  } else if (playerSelection === 'Scissors' && computerSelection === 'Rock') {
-    return computerWin;
-  } else if (playerSelection === 'Scissors' && computerSelection === 'Paper') {
-    return playerWin;
+
   } else {
+    results.textContent = 'Draw.';
     return 'draw';
   }
 }
 
-function game() {
-  let playerScore = 0;
-  let computerScore = 0;
+function game(result) {
+  switch (result) {
+    case 'playerWin':
+      playerScore++;
+      currentScore.textContent = (`Score: ${playerScore}:${computerScore}`);
+      break;
+    case 'computerWin':
+      computerScore++;
+      currentScore.textContent = (`Score: ${playerScore}:${computerScore}`);
+      break;
+    case 'draw':
+      currentScore.textContent = (`Score: ${playerScore}:${computerScore}`);
+      break;
+  };
 
-  for (let i = 0; i < 5; i++) {
-
-    switch (playRound(playerPlay(), computerPlay())) {
-      case ('playerWin'):
-        playerScore++;
-        console.log(`Player wins this round! Current score is ${playerScore}:${computerScore}`);
-        break;
-
-      case ('computerWin'):
-        computerScore++;
-        console.log(`Computer wins this round! Current score is ${playerScore}:${computerScore}`);
-        break;
-
-      case ('draw'):
-        console.log(`Draw! Current score is ${playerScore}:${computerScore}`);
-        break;
-    }
-  }
-
-  if (playerScore > computerScore) {
-    console.log('The Player Wins!');
-  } else if (playerScore < computerScore) {
-    console.log('The Computer Wins!');
-  } else {
-    console.log('It\'s a Draw!');
-  }
+  if (playerScore === 5) finalScore.textContent = 'You win!';
+  if (computerScore === 5) finalScore.textContent = 'You lose!';
 }
 
-game();
+function showUi() {
+  const content = document.querySelector('#ui');
+  content.removeAttribute('hidden');
+}
+
+function hideUi() {
+  const content = document.querySelector('#ui');
+  content.setAttribute('hidden', 'hidden');
+}
+
+function resetGame() {
+  playerScore = 0;
+  computerScore = 0;
+  results.textContent = "Results:";
+  currentScore.textContent = "Score:";
+  finalScore.textContent = "";
+  hideUi();
+}
